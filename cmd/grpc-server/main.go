@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"net"
+
 	desc "github.com/sarastee/chat-server/pkg/chat_api_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"log"
-	"net"
 )
 
 const (
@@ -19,14 +20,14 @@ type server struct {
 	desc.UnimplementedChatAPIV1Server
 }
 
-type Chat struct {
+type chat struct {
 	ID        int64
 	Usernames []string
 }
 
-var testChat Chat
+var testChat chat
 
-func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
+func (s *server) Create(_ context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 
 	testChat.ID = 0
 	testChat.Usernames = req.Usernames
@@ -38,19 +39,19 @@ func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Cre
 	}, nil
 }
 
-func (s *server) Delete(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
+func (s *server) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
 	if req.Id != testChat.ID {
 		return nil, fmt.Errorf("chat %d not found", req.Id)
 	}
 
-	testChat = Chat{}
+	testChat = chat{}
 
 	log.Printf("Chat %d was deleted", req.Id)
 
 	return &emptypb.Empty{}, nil
 }
 
-func (s *server) SendMessage(ctx context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
+func (s *server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
 	log.Printf("Message: \"%v\" from: %v at %v", req.Message.Text, req.Message.From, req.Message.Timestamp.AsTime())
 
 	return &emptypb.Empty{}, nil
