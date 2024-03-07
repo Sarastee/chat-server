@@ -10,10 +10,15 @@ import (
 
 // Create chat in db
 func (r *Repo) Create(ctx context.Context) (int64, error) {
-	builderInsert := r.sq.Insert(chatTable).PlaceholderFormat(squirrel.Dollar).
-		Suffix("RETURNING %s", idColumn)
+	// `insert into %s default values returning id`
 
-	query, args, err := builderInsert.ToSql()
+	buildInsert := r.sq.Insert(chatTable).
+		PlaceholderFormat(squirrel.Dollar).
+		Columns(idColumn).
+		Values(squirrel.Expr("DEFAULT")).
+		Suffix("RETURNING id")
+
+	query, _, err := buildInsert.ToSql()
 	if err != nil {
 		return 0, err
 	}
@@ -23,7 +28,7 @@ func (r *Repo) Create(ctx context.Context) (int64, error) {
 		QueryRaw: query,
 	}
 
-	rows, err := r.db.DB().QueryContext(ctx, q, args...)
+	rows, err := r.db.DB().QueryContext(ctx, q)
 	if err != nil {
 		return 0, err
 	}

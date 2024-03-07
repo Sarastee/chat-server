@@ -9,16 +9,14 @@ import (
 	"github.com/sarastee/chat-server/internal/client/db"
 	serviceModel "github.com/sarastee/chat-server/internal/model"
 	"github.com/sarastee/chat-server/internal/repository"
-	"github.com/sarastee/chat-server/internal/repository/message/convert"
 )
 
 // Create ...
 func (r *Repo) Create(ctx context.Context, message serviceModel.Message) error {
-	repoMessage := convert.ToMessageFromServiceMessage(&message)
-
-	builderInsert := r.sq.Insert(messageTable).PlaceholderFormat(squirrel.Dollar).
+	builderInsert := r.sq.Insert(messageTable).
+		PlaceholderFormat(squirrel.Dollar).
 		Columns(fromUserIDColumn, chatIDColumn, textColumn, sentAtColumn).
-		Values(repoMessage.FromUserID, repoMessage.ToChatID, repoMessage.Text, repoMessage.SendTime)
+		Values(message.FromUserID, message.ToChatID, message.Text, message.SendTime)
 
 	query, args, err := builderInsert.ToSql()
 	if err != nil {
@@ -30,7 +28,7 @@ func (r *Repo) Create(ctx context.Context, message serviceModel.Message) error {
 		QueryRaw: query,
 	}
 
-	_, err = r.db.DB().ExecContext(ctx, q, args)
+	_, err = r.db.DB().QueryContext(ctx, q, args...)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
@@ -41,6 +39,7 @@ func (r *Repo) Create(ctx context.Context, message serviceModel.Message) error {
 				return repository.ErrUserNotFound
 			}
 		}
+		return err
 	}
 
 	return nil

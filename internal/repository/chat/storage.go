@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	chatTable     = "chat"
+	chatTable     = "\"chat\""
 	chatUserTable = "chat_user"
 
 	userIDColumn = "user_id"

@@ -11,12 +11,17 @@ import (
 
 // IsUserInChat ...
 func (r *Repo) IsUserInChat(ctx context.Context, chatID int64, userID int64) (bool, error) {
-	builderIsUserInChat := r.sq.Select(chatIDColumn).PlaceholderFormat(squirrel.Dollar).Where(squirrel.Eq{
-		userIDColumn: userID,
-		chatIDColumn: chatID,
-	})
+	// `SELECT TRUE FROM %s WHERE %s = @%s AND %s = @%s`
 
-	query, args, err := builderIsUserInChat.ToSql()
+	builderSelect := r.sq.Select("TRUE").
+		PlaceholderFormat(squirrel.Dollar).
+		From(chatUserTable).
+		Where(squirrel.Eq{
+			chatIDColumn: chatID,
+			userIDColumn: userID,
+		})
+
+	query, args, err := builderSelect.ToSql()
 	if err != nil {
 		return false, err
 	}
@@ -26,7 +31,7 @@ func (r *Repo) IsUserInChat(ctx context.Context, chatID int64, userID int64) (bo
 		QueryRaw: query,
 	}
 
-	rows, err := r.db.DB().QueryContext(ctx, q, args)
+	rows, err := r.db.DB().QueryContext(ctx, q, args...)
 	if err != nil {
 		return false, err
 	}

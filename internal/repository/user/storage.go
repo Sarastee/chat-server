@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	userTable = "user"
+	userTable = "\"user\""
 
 	idColumn = "id"
 )

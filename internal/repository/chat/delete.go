@@ -9,7 +9,8 @@ import (
 
 // Delete ...
 func (r *Repo) Delete(ctx context.Context, chatID int64) error {
-	builderDelete := r.sq.Delete(chatTable).PlaceholderFormat(squirrel.Dollar).
+	builderDelete := r.sq.Delete(chatTable).
+		PlaceholderFormat(squirrel.Dollar).
 		Where(squirrel.Eq{idColumn: chatID})
 
 	query, args, err := builderDelete.ToSql()
@@ -23,9 +24,6 @@ func (r *Repo) Delete(ctx context.Context, chatID int64) error {
 	}
 
 	_, err = r.db.DB().ExecContext(ctx, q, args...)
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
