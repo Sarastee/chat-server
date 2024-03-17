@@ -6,9 +6,9 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/sarastee/chat-server/internal/client/db"
 	serviceModel "github.com/sarastee/chat-server/internal/model"
 	"github.com/sarastee/chat-server/internal/repository"
+	"github.com/sarastee/platform_common/pkg/db"
 )
 
 // Create ...

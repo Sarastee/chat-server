@@ -5,7 +5,7 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
-	"github.com/sarastee/chat-server/internal/client/db"
+	"github.com/sarastee/platform_common/pkg/db"
 )
 
 // Create chat in db
