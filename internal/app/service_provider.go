@@ -4,11 +4,11 @@ import (
 	"context"
 	"log"
 
-	"github.com/sarastee/chat-server/internal/client/db"
-	"github.com/sarastee/chat-server/internal/client/db/pg"
+	"github.com/sarastee/platform_common/pkg/closer"
+	"github.com/sarastee/platform_common/pkg/db"
+	"github.com/sarastee/platform_common/pkg/db/pg"
 
 	"github.com/sarastee/chat-server/internal/api/chat"
-	"github.com/sarastee/chat-server/internal/closer"
 	"github.com/sarastee/chat-server/internal/config"
 	"github.com/sarastee/chat-server/internal/config/env"
 	"github.com/sarastee/chat-server/internal/repository"

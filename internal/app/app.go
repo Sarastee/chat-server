@@ -5,9 +5,9 @@ import (
 	"log"
 	"net"
 
-	"github.com/sarastee/chat-server/internal/closer"
 	"github.com/sarastee/chat-server/internal/config"
 	desc "github.com/sarastee/chat-server/pkg/chat_v1"
+	"github.com/sarastee/platform_common/pkg/closer"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
