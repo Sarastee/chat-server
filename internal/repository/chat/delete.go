@@ -10,7 +10,13 @@ import (
 
 // Delete ...
 func (r *Repo) Delete(ctx context.Context, chatID int64) error {
-	queryFormat := `DELETE FROM %s WHERE %s = @%s`
+	queryFormat := `
+	DELETE FROM 
+		%s 
+	WHERE 
+	    %s = @%s
+	`
+
 	query := fmt.Sprintf(queryFormat, chatTable, idColumn, idColumn)
 
 	q := db.Query{

@@ -22,7 +22,13 @@ func (r *Repo) CreateMass(ctx context.Context, userIDs []int64) error {
 
 	values := strings.Join(strUserIDs, ",")
 
-	queryFormat := `INSERT INTO %s (%s) VALUES %s ON CONFLICT DO NOTHING`
+	queryFormat := `
+	INSERT INTO
+	    %s (%s) 
+	VALUES 
+	    %s 
+	ON CONFLICT DO NOTHING
+	`
 
 	query := fmt.Sprintf(queryFormat, userTable, idColumn, values)
 

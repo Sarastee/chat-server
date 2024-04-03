@@ -12,9 +12,11 @@ import (
 // IsUserInChat ...
 func (r *Repo) IsUserInChat(ctx context.Context, chatID int64, userID int64) (bool, error) {
 	queryFormat := `
-		SELECT TRUE
-		FROM %s
-		WHERE %s = @%s AND %s = @%s
+	SELECT TRUE
+	FROM 
+	    %s
+	WHERE 
+	    %s = @%s AND %s = @%s
 	`
 
 	query := fmt.Sprintf(

@@ -10,7 +10,12 @@ import (
 
 // Create chat in db
 func (r *Repo) Create(ctx context.Context) (int64, error) {
-	queryFormat := `INSERT INTO %s DEFAULT VALUES RETURNING id`
+	queryFormat := `
+	INSERT INTO 
+	    %s 
+	DEFAULT VALUES RETURNING id
+	`
+
 	query := fmt.Sprintf(queryFormat, chatTable)
 
 	q := db.Query{

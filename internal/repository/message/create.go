@@ -18,8 +18,10 @@ func (r *Repo) Create(ctx context.Context, message serviceModel.Message) error {
 	repoMessage := convert.ToMessageFromServiceMessage(&message)
 
 	queryFormat := `
-		INSERT INTO %s (%s, %s, %s, %s)
-		VALUES (@%s, @%s, @%s, @%s)
+	INSERT INTO 
+		%s (%s, %s, %s, %s)
+	VALUES 
+		(@%s, @%s, @%s, @%s)
 	`
 
 	query := fmt.Sprintf(
