@@ -3,35 +3,36 @@ package chat
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/sarastee/platform_common/pkg/db"
 )
 
 // IsUserInChat ...
 func (r *Repo) IsUserInChat(ctx context.Context, chatID int64, userID int64) (bool, error) {
-	// `SELECT TRUE FROM %s WHERE %s = @%s AND %s = @%s`
+	queryFormat := `
+		SELECT TRUE
+		FROM %s
+		WHERE %s = @%s AND %s = @%s
+	`
 
-	builderSelect := r.sq.Select("TRUE").
-		PlaceholderFormat(squirrel.Dollar).
-		From(chatUserTable).
-		Where(squirrel.Eq{
-			chatIDColumn: chatID,
-			userIDColumn: userID,
-		})
-
-	query, args, err := builderSelect.ToSql()
-	if err != nil {
-		return false, err
-	}
+	query := fmt.Sprintf(
+		queryFormat,
+		chatUserTable,
+		chatIDColumn, chatIDColumn, userIDColumn, userIDColumn)
 
 	q := db.Query{
 		Name:     "chat_repository.IsUserInChat",
 		QueryRaw: query,
 	}
 
-	rows, err := r.db.DB().QueryContext(ctx, q, args...)
+	args := pgx.NamedArgs{
+		chatIDColumn: chatID,
+		userIDColumn: userID,
+	}
+
+	rows, err := r.db.DB().QueryContext(ctx, q, args)
 	if err != nil {
 		return false, err
 	}

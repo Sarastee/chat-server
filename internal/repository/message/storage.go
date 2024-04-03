@@ -1,7 +1,6 @@
 package message
 
 import (
-	"github.com/Masterminds/squirrel"
 	"github.com/sarastee/chat-server/internal/repository"
 	"github.com/sarastee/platform_common/pkg/db"
 )
@@ -24,7 +23,6 @@ var _ repository.MessageRepository = (*Repo)(nil)
 // Repo ...
 type Repo struct {
 	db db.Client
-	sq squirrel.StatementBuilderType
 }
 
 // NewRepo ...

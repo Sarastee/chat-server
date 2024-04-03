@@ -2,8 +2,9 @@ package user
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/sarastee/platform_common/pkg/db"
 )
 
@@ -14,25 +15,23 @@ func (r *Repo) CreateMass(ctx context.Context, userIDs []int64) error {
 		return nil
 	}
 
-	builderInsert := r.sq.Insert(userTable).
-		PlaceholderFormat(squirrel.Dollar).
-		Columns(idColumn).Suffix("ON CONFLICT DO NOTHING")
-
+	var strUserIDs = make([]string, 0, countUsers)
 	for _, userID := range userIDs {
-		builderInsert = builderInsert.Values(userID)
+		strUserIDs = append(strUserIDs, fmt.Sprintf("(%d)", userID))
 	}
 
-	query, args, err := builderInsert.ToSql()
-	if err != nil {
-		return err
-	}
+	values := strings.Join(strUserIDs, ",")
+
+	queryFormat := `INSERT INTO %s (%s) VALUES %s ON CONFLICT DO NOTHING`
+
+	query := fmt.Sprintf(queryFormat, userTable, idColumn, values)
 
 	q := db.Query{
 		Name:     "user_repository.CreateMass",
 		QueryRaw: query,
 	}
 
-	_, err = r.db.DB().ExecContext(ctx, q, args...)
+	_, err := r.db.DB().ExecContext(ctx, q)
 	if err != nil {
 		return err
 	}

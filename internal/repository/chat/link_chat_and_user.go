@@ -24,6 +24,7 @@ func (r *Repo) LinkChatAndUsers(ctx context.Context, chatID int64, userIDs []int
 		[]string{chatIDColumn, userIDColumn},
 		pgx.CopyFromRows(rows),
 	)
+
 	if err != nil {
 		return err
 	}
